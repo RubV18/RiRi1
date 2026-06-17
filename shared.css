@@ -1,0 +1,130 @@
+/* ============================================================
+   SHELL CONDIVISO - Broccoletto, palette, cuori al tocco
+   Usato da index.html, seria.html, tiii.html
+   ============================================================ */
+:root{
+  --rosa-fondo:#FDE7EE;
+  --rosa-medio:#F7C8D8;
+  --rosa-scuro:#8B4A5C;
+  --giallo:#FFD93D;
+  --giallo-scuro:#E8B92E;
+  --verde:#6Fae6a;
+  --verde-scuro:#4f8a4a;
+  /* varianti per la versione seria: rosa piu' desaturato/elegante */
+  --rosa-serio:#E8C4CE;
+  --rosa-serio-scuro:#9A6B78;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  font-family:'VT323',monospace;
+  background:var(--rosa-fondo);
+  color:var(--rosa-scuro);
+  image-rendering:pixelated;
+  touch-action:manipulation;
+  user-select:none;
+}
+
+/* ---------- MASCOTTE BROCCOLETTO ---------- */
+#brocco{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  width:120px;height:140px;z-index:50;pointer-events:none;
+  transition:transform .25s ease;
+}
+.pix{position:absolute;}
+.gambo{bottom:0;left:48px;width:24px;height:42px;background:var(--verde-scuro);border-radius:0 0 6px 6px;}
+.gambo-l{bottom:8px;left:34px;width:16px;height:10px;background:var(--verde-scuro);border-radius:8px 0 0 8px;}
+.gambo-r{bottom:8px;left:70px;width:16px;height:10px;background:var(--verde-scuro);border-radius:0 8px 8px 0;}
+.ciuffo{bottom:38px;left:18px;width:84px;height:58px;background:var(--verde);border-radius:42px 42px 22px 22px;}
+.bub{background:var(--verde);border-radius:50%;}
+.bub.d{background:var(--verde-scuro);}
+.b1{bottom:84px;left:22px;width:24px;height:24px;}
+.b2{bottom:92px;left:40px;width:28px;height:28px;}
+.b3{bottom:88px;left:62px;width:24px;height:24px;}
+.b4{bottom:100px;left:30px;width:20px;height:20px;}
+.b5{bottom:100px;left:54px;width:22px;height:22px;}
+.b6{bottom:78px;left:14px;width:20px;height:20px;}
+.b7{bottom:78px;left:80px;width:20px;height:20px;}
+.occhio{bottom:60px;width:13px;height:13px;background:#fff;border:2px solid #1a3a18;border-radius:50%;z-index:5;}
+.occhio.l{left:38px;} .occhio.r{left:64px;}
+.pupilla{width:5px;height:5px;background:#1a3a18;border-radius:50%;position:absolute;top:3px;left:3px;}
+.bocca{bottom:48px;left:52px;width:16px;height:6px;border-bottom:3px solid #1a3a18;z-index:5;}
+.lacrima{bottom:46px;width:6px;height:12px;background:#7fd0ff;border-radius:0 0 4px 4px;opacity:0;transition:opacity .3s;z-index:6;}
+.lacrima.l{left:40px;} .lacrima.r{left:66px;}
+.pozza{bottom:-4px;left:50%;transform:translateX(-50%);width:0;height:0;background:#7fd0ff;opacity:.55;border-radius:50%;transition:width .5s ease,height .5s ease;z-index:1;}
+
+/* stati emotivi */
+#brocco.triste{transform:translateX(-50%) scale(.95);}
+#brocco.triste .occhio{height:14px;}
+#brocco.triste .bocca{border-bottom:none;border-top:3px solid #1a3a18;border-radius:50% 50% 0 0;bottom:42px;}
+#brocco.triste .lacrima{opacity:1;animation:drop 2.2s ease-in infinite;}
+@keyframes drop{0%{transform:translateY(0) scaleY(.6);opacity:0;}25%{opacity:1;}80%{transform:translateY(28px) scaleY(1.3);opacity:1;}100%{transform:translateY(34px) scaleY(1.3);opacity:0;}}
+#brocco.triste .lacrima.r{animation-delay:1.1s;}
+#brocco.gioiaA{animation:hop .4s ease infinite;}
+@keyframes hop{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-22px);}}
+#brocco.gioiaA .bocca{width:22px;height:12px;border-bottom:4px solid #1a3a18;border-radius:0 0 12px 12px;left:49px;bottom:46px;}
+#brocco.gioiaB{animation:wiggle .3s ease infinite;}
+@keyframes wiggle{0%,100%{transform:translateX(-50%) rotate(-6deg);}50%{transform:translateX(-50%) rotate(6deg);}}
+#brocco.gioiaB .bocca{width:24px;height:14px;border:3px solid #1a3a18;border-top:none;border-radius:0 0 14px 14px;left:48px;bottom:44px;background:#ff8fb0;}
+
+/* celebrazioni */
+#brocco.celebraA{animation:swayA 2s ease-in-out;transform:translateX(-50%) scale(2.4) translateY(-50px);transition:transform 2s cubic-bezier(.25,.8,.35,1);z-index:90;}
+@keyframes swayA{0%{filter:brightness(1);}100%{filter:brightness(1.12);}}
+#brocco.celebraA .bocca{width:26px;height:14px;border-bottom:4px solid #1a3a18;border-radius:0 0 14px 14px;left:47px;bottom:46px;}
+#brocco.celebraA .occhio{height:11px;border-radius:50% 50% 40% 40%;}
+#brocco.celebraB{transform:translateX(-50%) scale(2.4) translateY(-50px);transition:transform 2s cubic-bezier(.34,1.3,.5,1);z-index:90;}
+#brocco.celebraB.anim{animation:bounceB 2s ease-in-out;}
+@keyframes bounceB{0%,100%{rotate:0deg;}20%{rotate:-5deg;}40%{rotate:5deg;}60%{rotate:-3deg;}80%{rotate:3deg;}}
+#brocco.celebraB .bocca{width:28px;height:20px;border:3px solid #1a3a18;border-top:none;border-radius:0 0 16px 16px;left:46px;bottom:40px;background:#ff8fb0;}
+#brocco.celebraB .occhio{background:transparent;border:none;overflow:visible;}
+#brocco.celebraB .pupilla{display:none;}
+#brocco.celebraB .occhio::before{content:'♥';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#e85b8a;font-size:16px;line-height:1;}
+#brocco.celebraB .occhio{animation:eyePop .5s ease infinite alternate;}
+@keyframes eyePop{from{transform:scale(1);}to{transform:scale(1.25);}}
+
+/* stati attivi (mascotte persistente nelle pagine) */
+#brocco.attivoA{animation:hopActive .5s ease infinite;}
+@keyframes hopActive{0%,100%{transform:translateX(-50%) translateY(0) scale(1);}50%{transform:translateX(-50%) translateY(-14px) scale(1);}}
+#brocco.attivoA .bocca{width:22px;height:12px;border-bottom:4px solid #1a3a18;border-radius:0 0 12px 12px;left:49px;bottom:46px;}
+#brocco.attivoB{animation:wiggleActive .35s ease infinite;}
+@keyframes wiggleActive{0%,100%{transform:translateX(-50%) rotate(-5deg) scale(1);}50%{transform:translateX(-50%) rotate(5deg) scale(1);}}
+#brocco.attivoB .bocca{width:24px;height:14px;border:3px solid #1a3a18;border-top:none;border-radius:0 0 14px 14px;left:48px;bottom:44px;background:#ff8fb0;}
+#brocco.attivoB .occhio{background:transparent;border:none;overflow:visible;}
+#brocco.attivoB .pupilla{display:none;}
+#brocco.attivoB .occhio::before{content:'♥';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#e85b8a;font-size:16px;line-height:1;}
+
+/* idle: piccolo respiro quando non fa nulla */
+#brocco.idleA .bocca{width:22px;height:10px;border-bottom:3px solid #1a3a18;border-radius:0 0 12px 12px;left:49px;bottom:46px;}
+
+/* mascotte in ANGOLO (persistente nelle pagine): salta/dimena senza translateX */
+#brocco.cornerA{animation:cornerHop .6s ease infinite;}
+@keyframes cornerHop{0%,100%{transform:scale(.7) translateY(0);}50%{transform:scale(.7) translateY(-18px);}}
+#brocco.cornerA .bocca{width:22px;height:12px;border-bottom:4px solid #1a3a18;border-radius:0 0 12px 12px;left:49px;bottom:46px;}
+#brocco.cornerB{animation:cornerWiggle .4s ease infinite;}
+@keyframes cornerWiggle{0%,100%{transform:scale(.7) rotate(-6deg);}50%{transform:scale(.7) rotate(6deg);}}
+#brocco.cornerB .bocca{width:24px;height:14px;border:3px solid #1a3a18;border-top:none;border-radius:0 0 14px 14px;left:48px;bottom:44px;background:#ff8fb0;}
+#brocco.cornerB .occhio{background:transparent;border:none;overflow:visible;}
+#brocco.cornerB .pupilla{display:none;}
+#brocco.cornerB .occhio::before{content:'♥';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#e85b8a;font-size:16px;line-height:1;}
+
+/* stato FINALE: mascotte centrata (absolute) a fine sentiero, saltella sul posto */
+#brocco.finaleA{animation:finaleHop .7s ease infinite;}
+@keyframes finaleHop{0%,100%{transform:translateX(-50%) scale(.7) translateY(0);}50%{transform:translateX(-50%) scale(.7) translateY(-16px);}}
+#brocco.finaleA .bocca{width:22px;height:12px;border-bottom:4px solid #1a3a18;border-radius:0 0 12px 12px;left:49px;bottom:46px;}
+
+/* pianto in ANGOLO (tiii): triste senza translateX, scala .7 */
+#brocco.cornerCry{transform:scale(.7);}
+#brocco.cornerCry .occhio{height:14px;}
+#brocco.cornerCry .pupilla{display:block;}
+#brocco.cornerCry .occhio::before{content:none;}
+#brocco.cornerCry .bocca{border-bottom:none;border-top:3px solid #1a3a18;border-radius:50% 50% 0 0;bottom:42px;background:transparent;width:16px;left:52px;}
+#brocco.cornerCry .lacrima{opacity:1;animation:drop 1.4s ease-in infinite;}
+#brocco.cornerCry .lacrima.r{animation-delay:.7s;}
+
+/* ---------- CUORI AL TOCCO ---------- */
+.heartfx{position:fixed;font-size:20px;pointer-events:none;z-index:60;animation:floatUp 1s ease-out forwards;}
+@keyframes floatUp{0%{transform:translate(-50%,-50%) scale(.6);opacity:1;}100%{transform:translate(-50%,-160%) scale(1.3);opacity:0;}}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important;}
+}

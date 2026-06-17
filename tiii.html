@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>La cameretta</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  body{background:#F3C6D6;overflow-x:hidden;}
+  .topbar{text-align:center;padding:16px 16px 6px;}
+  .topbar h1{font-family:'Press Start 2P',monospace;font-size:13px;color:#9A4E68;line-height:1.7;}
+  .topbar p{font-size:19px;color:#9A4E68;opacity:.8;margin-top:6px;}
+
+  /* contenitore stanza: mantiene proporzione, scala su mobile */
+  .room-wrap{max-width:480px;margin:0 auto;padding:6px 10px 40px;}
+  .room{position:relative;width:100%;aspect-ratio:1/1;}
+  .room svg{position:absolute;inset:0;width:100%;height:100%;}
+
+  /* hotspot cliccabili sopra la scena */
+  .hotspot{position:absolute;cursor:pointer;transition:transform .15s ease;}
+  .hotspot:active{transform:scale(.92);}
+  .hotspot svg{position:static;width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(1px 2px 0 rgba(122,63,84,.35));}
+  /* ombra a terra/mensola per dare profondita' e segnalare che e' cliccabile */
+  .hotspot::after{
+    content:'';position:absolute;left:10%;right:10%;bottom:-6%;height:10%;
+    background:rgba(122,63,84,.28);border-radius:50%;z-index:-1;
+    transition:transform .15s ease,opacity .15s ease;
+  }
+  .hotspot.noshadow::after{display:none;}
+  .hotspot:active::after{transform:scaleX(.8);opacity:.5;}
+  /* alone al tocco per feedback */
+  .hotspot.bounce{animation:objBounce .5s ease;}
+  @keyframes objBounce{0%,100%{transform:translateY(0) rotate(0);}30%{transform:translateY(-14px) rotate(-6deg);}60%{transform:translateY(-6px) rotate(5deg);}}
+  .hotspot.shake{animation:objShake .5s ease;}
+  @keyframes objShake{0%,100%{transform:rotate(0);}20%{transform:rotate(-10deg);}40%{transform:rotate(9deg);}60%{rotate:-6deg;}80%{rotate:5deg;}}
+
+  /* fumetto descrittivo */
+  .bubble{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    z-index:80;background:#fff;border:5px solid #9A4E68;border-radius:16px;
+    padding:16px 18px;max-width:300px;width:calc(100% - 40px);
+    opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;
+    text-align:center;
+  }
+  .bubble.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+  .bubble .btitle{font-family:'Press Start 2P',monospace;font-size:11px;color:#9A4E68;line-height:1.6;margin-bottom:8px;}
+  .bubble .btext{font-size:20px;line-height:1.3;color:#7a3f54;}
+  .bubble .bclose{margin-top:10px;font-family:'Press Start 2P',monospace;font-size:9px;background:#FFD93D;border:3px solid #9A4E68;border-radius:6px;padding:8px 12px;cursor:pointer;color:#7a3f54;}
+
+  /* overlay minigioco macchina gialla */
+  .game-scrim{position:fixed;inset:0;background:rgba(122,63,84,.5);z-index:90;opacity:0;pointer-events:none;transition:opacity .3s;}
+  .game-scrim.show{opacity:1;pointer-events:auto;}
+  .game-modal{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);
+    z-index:91;background:#FDE7EE;border:5px solid #9A4E68;border-radius:16px;
+    padding:18px;width:calc(100% - 32px);max-width:380px;
+    opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
+  }
+  .game-modal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
+  .game-modal h2{font-family:'Press Start 2P',monospace;font-size:12px;color:#9A4E68;text-align:center;line-height:1.6;margin-bottom:6px;}
+  .game-sub{font-size:16px;text-align:center;color:#7a3f54;opacity:.8;margin-bottom:12px;white-space:nowrap;}
+  #road{width:100%;height:220px;background:#cfe8c9;border:4px solid #9A4E68;border-radius:10px;position:relative;overflow:hidden;}
+  .score{font-family:'Press Start 2P',monospace;font-size:20px;color:#9A4E68;text-align:center;margin:12px 0;}
+  .game-actions{display:flex;gap:10px;}
+  .game-finish{flex:1;font-family:'Press Start 2P',monospace;font-size:11px;background:#FFD93D;border:3px solid #9A4E68;border-radius:8px;padding:12px;cursor:pointer;color:#7a3f54;box-shadow:0 4px 0 #E8B92E;}
+  .game-finish:active{transform:translateY(3px);box-shadow:0 1px 0 #E8B92E;}
+  .game-close{font-family:'Press Start 2P',monospace;font-size:10px;background:#F2C0D2;border:3px solid #9A4E68;border-radius:8px;padding:12px;cursor:pointer;color:#7a3f54;}
+  /* booster e macchine nell'area gioco */
+  .road-item{position:absolute;cursor:pointer;width:44px;height:44px;}
+  .road-item svg{width:100%;height:100%;image-rendering:pixelated;}
+  .road-item.booster{animation:boostPulse .7s ease-in-out infinite;}
+  @keyframes boostPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}
+  .road-badge{position:absolute;top:-6px;right:-6px;font-family:'Press Start 2P',monospace;font-size:8px;background:#9A4E68;color:#fff;border-radius:8px;padding:2px 4px;}
+  /* schermata messaggio sopra il gioco */
+  .game-msg{
+    position:absolute;inset:0;background:#FDE7EE;border-radius:12px;
+    display:none;flex-direction:column;align-items:center;justify-content:center;
+    padding:24px;text-align:center;z-index:5;
+  }
+  .game-msg.show{display:flex;}
+  .gm-text{font-size:22px;line-height:1.4;color:#7a3f54;margin-bottom:20px;white-space:pre-line;}
+  .gm-btn{font-family:'Press Start 2P',monospace;font-size:11px;background:#FFD93D;border:3px solid #9A4E68;border-radius:8px;padding:12px 16px;cursor:pointer;color:#7a3f54;box-shadow:0 4px 0 #E8B92E;}
+  .gm-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #E8B92E;}
+  .gm-back{display:none;margin-top:10px;font-family:'Press Start 2P',monospace;font-size:9px;background:transparent;border:none;color:#9A4E68;text-decoration:underline;cursor:pointer;}
+
+  /* pannello lettera (ottavo elemento) */
+  .letter-scrim{position:fixed;inset:0;background:rgba(122,63,84,.4);z-index:85;opacity:0;pointer-events:none;transition:opacity .3s;}
+  .letter-scrim.show{opacity:1;pointer-events:auto;}
+  .letter-sheet{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-1.5deg) scale(.9);
+    z-index:86;width:calc(100% - 40px);max-width:360px;
+    background:
+      repeating-linear-gradient(#fff,#fff 25px,#cfe6f5 26px),
+      #fff;
+    border:3px solid #E58BAA;border-radius:6px;
+    padding:22px 20px;box-shadow:0 10px 0 rgba(122,63,84,.2);
+    opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
+  }
+  .letter-sheet.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) rotate(-1.5deg) scale(1);}
+  .letter-body{
+    font-family:'VT323',monospace;font-size:24px;line-height:1.08;color:#3a6ea5;
+    white-space:pre-line;min-height:120px;
+  }
+  .letter-close{display:block;margin:16px auto 0;font-family:'Press Start 2P',monospace;font-size:10px;background:#FFD93D;border:3px solid #9A4E68;border-radius:8px;padding:10px 16px;cursor:pointer;color:#7a3f54;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>la cameretta</h1>
+  <p>tocca le cose che conosci ♥</p>
+</div>
+
+<div class="room-wrap">
+  <div class="room" id="room">
+    <!-- la scena (sfondo stanza) viene iniettata via JS: drawRoom() -->
+    <!-- gli hotspot oggetti vengono iniettati via JS: drawObjects() -->
+  </div>
+</div>
+
+<!-- fumetto -->
+<div class="bubble" id="bubble">
+  <div class="btitle" id="b-title"></div>
+  <div class="btext" id="b-text"></div>
+  <button class="bclose" id="b-close">ok ♥</button>
+</div>
+
+<!-- pannello lettera (ottavo elemento) -->
+<div class="letter-scrim" id="letter-scrim"></div>
+<div class="letter-sheet" id="letter-sheet">
+  <div class="letter-body" id="letter-body">[la letterina che la versione bimba scriverebbe alla sua compagna di classe. Testo da inserire, come per le tappe.]</div>
+  <button class="letter-close" id="letter-close">chiudi ♥</button>
+</div>
+
+<!-- minigioco macchina gialla -->
+<div class="game-scrim" id="game-scrim"></div>
+<div class="game-modal" id="game-modal">
+  <h2>macchina gialla!</h2>
+  <div class="game-sub">arriva al numero giusto... ma e' a due cifre 👀</div>
+  <div id="road"></div>
+  <div class="score" id="score">0</div>
+  <div class="game-actions">
+    <button class="game-finish" id="game-finish">ho finito! ✋</button>
+    <button class="game-close" id="game-close">esci</button>
+  </div>
+  <!-- schermata messaggio (vittoria / sconfitta) -->
+  <div class="game-msg" id="game-msg">
+    <div class="gm-text" id="gm-text"></div>
+    <button class="gm-btn" id="gm-btn"></button>
+    <button class="gm-back" id="gm-back">no, torno a giocare</button>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script src="room.js"></script>
+<script>
+// ====== DEFINIZIONE OGGETTI ======
+// x,y,w in percentuale rispetto alla stanza. sprite = nome funzione in room.js
+const OGGETTI=[
+  {id:'car',    x:6,  y:80, w:24, sprite:'sprCar',     title:'macchina del tunisino', text:'67. sempre 67. tocca per giocare ♥', action:'game',  anim:'bounce', shadow:'floor'},
+  {id:'teacher',x:11, y:45, w:17, sprite:'sprTeacher', title:'la maestra',            text:'anche lei che ti ha insegnato tutto è venuta a festeggiare', anim:'bounce', shadow:'none'},
+  {id:'bottle', x:53, y:47, w:8,  sprite:'sprBottle',  title:'latte',                 text:'detto con la vocina, lo sai ♥', anim:'bounce', shadow:'shelf'},
+  {id:'straw',  x:58, y:45, w:6,  sprite:'sprStraw',   title:'la cannuccia',          text:'non usarla tuchy pls', anim:'shake', shadow:'shelf', cry:true},
+  {id:'doll',   x:42, y:8,  w:11, sprite:'sprDoll',    title:'la lottatrice',         text:'dopo che ti ho visto a torino è entrata di diritto qui!', anim:'shake', shadow:'shelf'},
+  {id:'crown',  x:54, y:9,  w:13, sprite:'sprCrown',   title:'la corona',             text:'6 la regina del BK e del mio cuore', anim:'bounce', shadow:'shelf'},
+  {id:'box',    x:70, y:16, w:13, sprite:'sprBox',     title:'mystery box',           text:'', action:'mystery', anim:'bounce', shadow:'shelf'},
+  {id:'letter', x:43, y:26, w:12, sprite:'sprLetter',  title:'una letterina',         text:'', action:'letter', anim:'bounce', shadow:'none'},
+];
+
+// contenuti casuali della mystery box
+const MYSTERY=[
+  {emoji:'🍫', label:'tioccolata!'},
+  {emoji:'🥦', label:'broccoletto'},
+  {emoji:'👑', label:'clash royale'},
+  {emoji:'♟️', label:'scacchi'},
+  {emoji:'🔵', label:'TampToria'},
+  {emoji:'💛', label:'un cuore giallo'},
+];
+
+const room=document.getElementById('room');
+const bubble=document.getElementById('bubble');
+
+// disegna scena + oggetti (funzioni in room.js)
+room.insertAdjacentHTML('beforeend', drawRoom());
+OGGETTI.forEach(o=>{
+  const div=document.createElement('div');
+  div.className='hotspot'+(o.shadow==='none'?' noshadow':'');
+  div.id='obj-'+o.id;
+  div.style.left=o.x+'%';div.style.top=o.y+'%';div.style.width=o.w+'%';
+  div.innerHTML=SPRITES[o.sprite]();
+  div.addEventListener('click',()=>onObject(o,div));
+  room.appendChild(div);
+});
+
+// ====== interazione oggetti ======
+let mysteryOpen=false;
+function onObject(o,el){
+  // animazione sul posto
+  if(o.anim){ el.classList.remove(o.anim); void el.offsetWidth; el.classList.add(o.anim); }
+  if(o.action==='game'){ openGame(); return; }
+  if(o.action==='mystery'){ openMystery(); return; }
+  if(o.action==='letter'){ openLetter(); return; }
+  showBubble(o.title,o.text);
+  // effetto speciale: la cannuccia fa piangere Broccoletto
+  if(o.cry) broccoCry();
+}
+
+// pannello lettera
+const letterScrim=document.getElementById('letter-scrim');
+const letterSheet=document.getElementById('letter-sheet');
+function openLetter(){ letterScrim.classList.add('show');letterSheet.classList.add('show'); }
+function closeLetter(){ letterScrim.classList.remove('show');letterSheet.classList.remove('show'); }
+document.getElementById('letter-close').addEventListener('click',closeLetter);
+letterScrim.addEventListener('click',closeLetter);
+
+function broccoCry(){
+  setMood(brocco,'cornerCry');
+  // pianto intenso: spawn di lacrime extra attorno alla mascotte
+  const r=brocco.getBoundingClientRect();
+  let n=0;
+  const cryLoop=setInterval(()=>{
+    spawnHeart(r.left+r.width*(0.3+Math.random()*0.4), r.top+r.height*0.4, {symbol:'💧',color:'#7fd0ff',size:14+Math.random()*8});
+    if(++n>14){ clearInterval(cryLoop); setMood(brocco,'cornerB'); }
+  },180);
+}
+
+function showBubble(title,text){
+  document.getElementById('b-title').textContent=title;
+  document.getElementById('b-text').textContent=text;
+  bubble.classList.add('show');
+}
+document.getElementById('b-close').addEventListener('click',()=>bubble.classList.remove('show'));
+
+function openMystery(){
+  const pick=MYSTERY[Math.floor(Math.random()*MYSTERY.length)];
+  showBubble('mystery box', pick.emoji+'  '+pick.label+'!');
+}
+
+// ====== minigioco macchina gialla con rage-logic ======
+const gameScrim=document.getElementById('game-scrim');
+const gameModal=document.getElementById('game-modal');
+const road=document.getElementById('road');
+const scoreEl=document.getElementById('score');
+const gameMsg=document.getElementById('game-msg');
+const gmText=document.getElementById('gm-text');
+const gmBtn=document.getElementById('gm-btn');
+const gmBack=document.getElementById('gm-back');
+const gameFinish=document.getElementById('game-finish');
+
+const TARGET=67;
+let score=0;
+let hasLostOnce=false;   // ricorda se ha gia' perso almeno una volta (per il tip)
+let spawnLoop=null;
+let itemsOnScreen=0;
+let tapsSinceBooster=0;
+
+const MSG_LOSE_FIRST="hahaha, hai perso proprio come con gli omini: \"L\" :P :P :P\n\ntip: il numero magico di gatito puo' aiutarti!!";
+const MSG_LOSE_AGAIN="ops, hai sforato ancora! :P\n\nricorda il numero magico di gatito...";
+const MSG_WIN_BASE="Sei stata bravissima!! Non so se sei piu' brava o bella.";
+const MSG_WIN_PS="\n\nPs: prima hai perso!! pero' come ticket hai vinto un pugno-giallo in omaggio, non avresti mai vinto :P";
+
+function openGame(){
+  score=0;itemsOnScreen=0;tapsSinceBooster=0;
+  scoreEl.textContent='0';
+  road.innerHTML='';
+  gameMsg.classList.remove('show');
+  gameScrim.classList.add('show');gameModal.classList.add('show');
+  startSpawning();
+}
+
+function startSpawning(){
+  stopSpawning();
+  // mantieni sempre qualche elemento sullo schermo
+  for(let i=0;i<3;i++) spawnItem();
+  spawnLoop=setInterval(()=>{ if(itemsOnScreen<4) spawnItem(); }, 900);
+}
+function stopSpawning(){ if(spawnLoop){clearInterval(spawnLoop);spawnLoop=null;} }
+
+function spawnItem(){
+  // decide se macchina normale (+1) o booster.
+  // primo giro: rendo i booster vistosi e frequenti per indurre lo sforamento.
+  // sempre garantita almeno una macchina +1 disponibile per chi gioca prudente.
+  tapsSinceBooster++;
+  let type='car';
+  const boosterChance = hasLostOnce ? 0.28 : 0.42;
+  const hasCarOnScreen=[...road.children].some(c=>c.dataset.type==='car');
+  if(tapsSinceBooster>=2 && Math.random()<boosterChance && hasCarOnScreen){
+    type=Math.random()<0.5?'magic67':'brocco';
+    tapsSinceBooster=0;
+  }
+  const el=document.createElement('div');
+  el.className='road-item'+(type!=='car'?' booster':'');
+  el.dataset.type=type;
+  el.style.left=(6+Math.random()*78)+'%';
+  el.style.top=(8+Math.random()*70)+'%';
+  let pts;
+  if(type==='car'){ el.innerHTML=SPRITES.sprCar(); pts=1; }
+  else if(type==='magic67'){ el.innerHTML=SPRITES.sprMagic67(); pts=7; el.innerHTML+='<span class="road-badge">+7</span>'; }
+  else { el.innerHTML=SPRITES.sprBroccoMini(); pts=4; el.innerHTML+='<span class="road-badge">+4</span>'; }
+  el.addEventListener('click',()=>{
+    addScore(pts);
+    el.remove();itemsOnScreen--;
+    if(road.querySelectorAll('.road-item').length<2) spawnItem();
+  });
+  road.appendChild(el);itemsOnScreen++;
+}
+
+function addScore(p){
+  score+=p;
+  scoreEl.textContent=String(score);
+  if(score>TARGET){ endGame(false); }
+}
+
+function declareFinish(){
+  // step di conferma prima del verdetto
+  gmText.textContent='sei proprio sicura? 🤔';
+  gmBtn.textContent='si, sono sicura!';
+  gmBtn.dataset.action='confirm';
+  // secondo pulsante "no, torno a giocare"
+  gmBack.style.display='inline-block';
+  gameMsg.classList.add('show');
+}
+
+function resolveFinish(){
+  if(score===TARGET){ endGame(true); }
+  else { endGame(false); }
+}
+
+function endGame(win){
+  stopSpawning();
+  road.innerHTML='';
+  gmBack.style.display='none';
+  if(win){
+    gmText.textContent = MSG_WIN_BASE + (hasLostOnce ? MSG_WIN_PS : '');
+    gmBtn.textContent='ti amo, chiudimi per sfogarti :3';
+    gmBtn.dataset.action='close';
+  } else {
+    gmText.textContent = hasLostOnce ? MSG_LOSE_AGAIN : MSG_LOSE_FIRST;
+    hasLostOnce=true;
+    gmBtn.textContent='riprova!';
+    gmBtn.dataset.action='retry';
+  }
+  gameMsg.classList.add('show');
+}
+
+gmBtn.addEventListener('click',()=>{
+  const a=gmBtn.dataset.action;
+  if(a==='close') closeGame();
+  else if(a==='confirm') resolveFinish();
+  else openGame(); // retry
+});
+gmBack.addEventListener('click',()=>{
+  // torna a giocare senza verdetto: nasconde il messaggio e riprende lo spawn
+  gameMsg.classList.remove('show');
+  gmBack.style.display='none';
+  startSpawning();
+});
+gameFinish.addEventListener('click',declareFinish);
+
+function closeGame(){ stopSpawning(); gameScrim.classList.remove('show');gameModal.classList.remove('show'); }
+document.getElementById('game-close').addEventListener('click',closeGame);
+gameScrim.addEventListener('click',closeGame);
+
+
+// ====== mascotte (versione tiii => cornerB con occhi a cuore) ======
+const brocco=mountBrocco();
+brocco.style.left='auto';brocco.style.right='10px';brocco.style.bottom='10px';
+brocco.style.transform='scale(.7)';brocco.style.transformOrigin='bottom right';
+setMood(brocco,'cornerB');
+
+enableTouchHearts();
+</script>
+</body>
+</html>
