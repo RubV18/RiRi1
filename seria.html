@@ -35,10 +35,12 @@
   }
   .tappa{
     position:relative;z-index:1;display:flex;align-items:center;
-    min-height:120px;padding:0 24px;
+    min-height:120px;padding:0;
   }
-  .tappa:nth-child(odd){justify-content:flex-start;}
-  .tappa:nth-child(even){justify-content:flex-end;}
+  /* ogni tappa occupa meta' larghezza e centra il nodo nella propria meta':
+     cosi' i nodi cadono al 25% e al 75%, simmetrici rispetto alla linea centrale */
+  .tappa:nth-child(odd){justify-content:center;padding-right:50%;}
+  .tappa:nth-child(even){justify-content:center;padding-left:50%;}
   .nodo{
     width:74px;height:74px;border-radius:50%;
     border:5px solid var(--rosa-serio-scuro);
@@ -97,7 +99,7 @@
   .panel .carousel::-webkit-scrollbar{height:0;}
   .panel .slide{
     flex:0 0 100%;scroll-snap-align:center;
-    aspect-ratio:4/3;background:var(--rosa-fondo);
+    aspect-ratio:3/4;background:var(--rosa-fondo);
     border:4px dashed var(--rosa-serio);border-radius:10px;
     display:flex;align-items:center;justify-content:center;
     color:var(--rosa-serio-scuro);font-size:18px;opacity:.8;
@@ -106,7 +108,22 @@
   .panel .dots{display:flex;gap:6px;justify-content:center;margin-bottom:18px;}
   .panel .dot{width:8px;height:8px;border-radius:50%;background:var(--rosa-serio);opacity:.5;transition:opacity .2s,transform .2s;}
   .panel .dot.on{opacity:1;background:var(--giallo-scuro);transform:scale(1.3);}
-  .panel .ptext{font-size:21px;line-height:1.4;color:var(--rosa-scuro);margin-bottom:22px;}
+  /* frecce del carosello */
+  .panel .carousel-wrap{position:relative;margin-bottom:10px;}
+  .panel .carousel-wrap .carousel{margin-bottom:0;}
+  .carousel-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);
+    width:40px;height:40px;border-radius:50%;padding:0;
+    background:rgba(255,255,255,.82);border:3px solid var(--rosa-serio-scuro);
+    color:var(--rosa-serio-scuro);font-family:Arial,sans-serif;font-size:24px;
+    font-weight:bold;line-height:1;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;z-index:2;box-shadow:0 2px 0 rgba(154,107,120,.35);
+  }
+  .carousel-arrow:active{transform:translateY(-50%) scale(.9);}
+  .carousel-arrow.prev{left:8px;}
+  .carousel-arrow.next{right:8px;}
+  .carousel-arrow[hidden]{display:none;}
+  .panel .ptext{font-size:21px;line-height:1.4;color:var(--rosa-scuro);margin-bottom:22px;white-space:pre-line;}
   .panel .pclose{
     width:100%;font-family:'Press Start 2P',monospace;font-size:12px;
     background:var(--giallo);color:var(--rosa-scuro);
@@ -144,7 +161,9 @@
   }
   .epi-sub{font-size:18px;color:var(--rosa-scuro);opacity:.65;margin-bottom:16px;}
   /* griglia fiori */
-  .flower-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  /* minmax(0,1fr) evita il "grid blowout": senza, l'SVG impone una larghezza
+     minima e la griglia esce dallo schermo in verticale su iPhone */
+  .flower-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
   .flower-cell{
     aspect-ratio:1;border-radius:10px;background:#FFF6D6;
     border:3px dashed var(--giallo-scuro);
@@ -265,7 +284,11 @@
 <div class="panel" id="panel">
   <div class="ptitle" id="p-title"></div>
   <div class="pdate" id="p-date"></div>
-  <div class="carousel" id="p-carousel"></div>
+  <div class="carousel-wrap">
+    <div class="carousel" id="p-carousel"></div>
+    <button class="carousel-arrow prev" id="p-prev" aria-label="foto precedente">&#8249;</button>
+    <button class="carousel-arrow next" id="p-next" aria-label="foto successiva">&#8250;</button>
+  </div>
   <div class="dots" id="p-dots"></div>
   <div class="ptext" id="p-text"></div>
   <button class="pclose" id="p-close">chiudi e continua</button>
@@ -279,7 +302,15 @@ const PUZZLE_IMG="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAQDAwM
 // ====== CONTENUTI DELLE TAPPE (placeholder, da riempire) ======
 // Ordine = sequenza di sblocco. 'photos' e' un array: 0 immagini = placeholder, 1+ = carosello.
 const TAPPE=[
-  {num:'1', label:'Come è iniziata',        title:'Tappa 1', date:'[mese / anno]', text:'[Qui il ricordo di come vi siete conosciuti. Scrivi tu il testo, io ho solo preparato lo spazio.]', photos:[]},
+  {num:'1', label:'Come è iniziata', title:'Com\'è iniziata', date:'Giugno 2025',
+   text:`Pensare a questo periodo mi fa sorridere: giravo tranquillo per Riomaggiore a prendere un Pokè e le centrifughe, da un momento all'altro la mia vita è cambiata…. Non dimenticherò mai quella sensazione di colpo di fulmine entrando e a dover pagare quei due euro, un sacco di emozioni mi sono passate semplicemente a passarti due euro e il resto è diventato storia. Una storia bellissima che da quel minimo incontro non ha fatto altro che iniziare ad essere scritta, perché la verità è quella, da quello scambio, ci siamo presi e mai più lasciati.
+
+Ne abbiamo passate tante in questo anno, alti e bassi, ma ogni cosa perfetta, calcolata per portarci qui dopo un anno come persone cresciute insieme. Ne sono grato, grato ed estremamente felice. Siamo passati poi agli scaloni con la prima volta che ti ho accompagnato a casa, per poi essere la persona più imbarazzata della spiaggia ad essere il tuo salvagente contro il mare, quel bacio che considererò il primo è stato il più bello e "ansiato" che io abbia mai dato… Avevo una paura fottuta di prendermi un palo che manco alla finale mondiali, ma la verità un'altra, la verità è la tranquillità che mi dai, con te è tutto così… Tranquillo e con un supporto incondizionato. Queste sono state solo le prime settimane insieme e già potrei scriverci un libro sopra, quello che voglio fare è benedire quel giorno e quell'incontro, perché mi ha travolto, mi ha dato uno scossone alla mia vita, ha preso il Rubin spaventoso con paura di aprirsi ed impegnarsi e lo ha reso la persona che ora ha la fortuna di stare al tuo fianco, perché di una grande fortuna stiamo parlando.
+
+Già in queste prime settimane ti ho proiettato nel mio mondo con una naturalezza incredibile, la tua prima risposta ad una mia storia per "prendere in giro" una maglia del Doria (Allah ybarek f Sabiri), ti mandavo gli outfit del matrimonio per flexare un pò il mio vestirmi bene. La verità è che cercavo disperatamente una tua approvazione o un cenno di "mi piaci", hai stravolto e centralizzato il mio mondo con una velocità e una naturalezza clamorosa, per questo ti ho dovuto definire "calamità", ma la calamità più bella che potesse intaccarmi.
+
+Le settimane sono proseguite, andate avanti, indietro, lente e veloci, ma con una nuova sicurezza (che tanto sicura in quei giorni non era, ma vabbè), però era l'inizio di quello che stiamo vivendo ora, ovvero tu ed io. Grazie Qalbi!`,
+   photos:['Photos/Tappa_1/web/1_selfie.jpg','Photos/Tappa_1/web/2_sasso.jpg','Photos/Tappa_1/web/3_doria.jpg','Photos/Tappa_1/web/4_matrimonio.jpg','Photos/Tappa_1/web/5_couscous.jpg','Photos/Tappa_1/web/6_svapo.jpg']},
   {num:'2', label:'Una giornata qualsiasi', title:'Tappa 2', date:'[mese / anno]', text:'[Una giornata spensierata che vi rappresenta.]', photos:[]},
   {num:'3', label:'Il primo viaggio',       title:'Tappa 3', date:'[gennaio / febbraio]', text:'[I vostri viaggi, fatti tra gennaio e febbraio. Sostituisci con il ricordo.]', photos:[]},
   {num:'4', label:'Anche le tempeste',      title:'Tappa 4', date:'[mese / anno]', text:'[Un momento difficile superato insieme. Anche i litigi fanno parte della storia.]', photos:[]},
@@ -369,33 +400,61 @@ function render(){
 
 // apertura pannello
 let openIndex=null; // quale tappa e' attualmente aperta nel pannello
+// ====== CAROSELLO: swipe manuale (frecce + dito) + autoplay ======
+const AUTOPLAY_MS=5000;            // avanzamento automatico ogni 5 secondi
+const car=document.getElementById('p-carousel');
+const dots=document.getElementById('p-dots');
+const arrowPrev=document.getElementById('p-prev');
+const arrowNext=document.getElementById('p-next');
+let carTimer=null, carIndex=0, carLen=1;
+
+function syncDots(){
+  [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===carIndex));
+}
+function goToSlide(i,smooth=true){
+  if(carLen<1) return;
+  carIndex=(i+carLen)%carLen;
+  car.scrollTo({left:carIndex*car.clientWidth, behavior:smooth?'smooth':'auto'});
+  syncDots();
+}
+function stopAutoplay(){ if(carTimer){clearInterval(carTimer);carTimer=null;} }
+// (ri)avvia il timer da zero: usato anche dopo ogni swipe manuale per il cooldown
+function startAutoplay(){
+  stopAutoplay();
+  if(carLen>1) carTimer=setInterval(()=>goToSlide(carIndex+1), AUTOPLAY_MS);
+}
+
 function buildCarousel(photos){
-  const car=document.getElementById('p-carousel');
-  const dots=document.getElementById('p-dots');
   car.innerHTML='';dots.innerHTML='';
   // se nessuna foto, mostro un placeholder singolo
   const items = (photos && photos.length) ? photos : [null];
+  carLen=items.length; carIndex=0;
   items.forEach((src,idx)=>{
     const s=document.createElement('div');
     s.className='slide';
     if(src){ s.style.backgroundImage=`url(${src})`;s.textContent=''; }
     else s.textContent='[ foto da inserire ]';
     car.appendChild(s);
-    if(items.length>1){
+    if(carLen>1){
       const d=document.createElement('div');
       d.className='dot'+(idx===0?' on':'');
       dots.appendChild(d);
     }
   });
-  // sincronizza i pallini con lo scroll
-  if(items.length>1){
-    car.onscroll=()=>{
-      const i=Math.round(car.scrollLeft/car.clientWidth);
-      [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===i));
-    };
-  } else { car.onscroll=null; }
   car.scrollLeft=0;
+  const multi=carLen>1;
+  arrowPrev.hidden=!multi; arrowNext.hidden=!multi;  // frecce solo con piu' foto
 }
+
+// tiene allineato l'indice quando si scorre col dito
+car.addEventListener('scroll',()=>{
+  const i=Math.round(car.scrollLeft/car.clientWidth);
+  if(i!==carIndex){ carIndex=i; syncDots(); }
+});
+// swipe manuale col dito: azzera il timer e fa ripartire il cooldown
+car.addEventListener('pointerdown',startAutoplay);
+arrowPrev.addEventListener('click',()=>{ goToSlide(carIndex-1); startAutoplay(); });
+arrowNext.addEventListener('click',()=>{ goToSlide(carIndex+1); startAutoplay(); });
 function openTappa(i){
   openIndex=i;
   const t=TAPPE[i];
@@ -404,8 +463,10 @@ function openTappa(i){
   document.getElementById('p-text').textContent=t.text;
   buildCarousel(t.photos);
   scrim.classList.add('show');panel.classList.add('show');
+  startAutoplay();
 }
 function closeTappa(){
+  stopAutoplay();
   scrim.classList.remove('show');panel.classList.remove('show');
   // avanza solo se stavo guardando la tappa attiva (non una gia' completata rivisitata)
   if(openIndex===unlocked && unlocked<TAPPE.length){ unlocked++; render(); placeBrocco(); }
@@ -539,23 +600,35 @@ function placeBrocco(){
     fumetto.style.top='auto';
     setTimeout(()=>fumetto.classList.add('show'),650);
   } else {
-    // durante il percorso: fixed in basso, sul lato della tappa attiva
+    // durante il percorso: il broccoletto sta in piedi SOPRA la tappa attiva (gialla)
     fumetto.classList.remove('show');
-    brocco.style.position='fixed';
-    const odd = (unlocked%2===0); // tappa index0 e' odd-child (sinistra)
-    brocco.style.transition='left .5s ease,right .5s ease,bottom .5s ease';
-    brocco.style.bottom='10px';brocco.style.top='auto';
+    const node = sentiero.querySelector('.tappa.active .nodo');
+    if(!node) return;
+    const r = node.getBoundingClientRect();
+    const pageLeft = r.left + window.scrollX;
+    const pageTop  = r.top  + window.scrollY;
+    brocco.style.position='absolute';
+    brocco.style.right='auto';
+    brocco.style.bottom='auto';
+    brocco.style.transition='left .5s ease,top .5s ease';
     brocco.style.transform='scale(.7)';
     brocco.style.transformOrigin='bottom center';
-    if(odd){ brocco.style.left='14px';brocco.style.right='auto'; }
-    else { brocco.style.left='auto';brocco.style.right='14px'; }
+    // il box e' 120x140: con origin bottom-center i "piedi" stanno in (left+60, top+140).
+    // li appoggio sul bordo superiore del nodo, centrati orizzontalmente sul nodo.
+    brocco.style.left = (pageLeft + r.width/2 - 60) + 'px';
+    brocco.style.top  = (pageTop - 140 + 6) + 'px';
     setMood(brocco,'cornerA');
   }
 }
+// se cambia la larghezza dello schermo, ricalcolo la posizione del broccoletto
+window.addEventListener('resize', placeBrocco);
 
 enableTouchHearts();
 render();
 placeBrocco();
+// i web font cambiano l'altezza di topbar/nodi una volta caricati: riallineo il broccoletto
+window.addEventListener('load', placeBrocco);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(placeBrocco);
 </script>
 </body>
 </html>
