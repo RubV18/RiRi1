@@ -131,6 +131,18 @@
     padding:14px;cursor:pointer;box-shadow:0 4px 0 var(--giallo-scuro);
   }
   .panel .pclose:active{transform:translateY(3px);box-shadow:0 1px 0 var(--giallo-scuro);}
+  /* freccia "vai in fondo": appare quando c'e' altro da scorrere (testo + pulsante) */
+  .pscroll-cue{
+    position:fixed;left:50%;bottom:18px;z-index:73;transform:translateX(-50%);
+    width:48px;height:48px;border-radius:50%;padding:0;
+    background:var(--giallo);border:4px solid var(--rosa-serio-scuro);
+    color:var(--rosa-scuro);font-size:22px;line-height:1;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    box-shadow:0 4px 0 var(--giallo-scuro);
+    opacity:0;pointer-events:none;transition:opacity .3s ease;
+  }
+  .pscroll-cue.show{opacity:1;pointer-events:auto;animation:pcueBob 1.6s ease-in-out infinite;}
+  @keyframes pcueBob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(5px);}}
 
   .finale{
     text-align:center;padding:40px 24px;opacity:0;transition:opacity .6s ease;
@@ -256,12 +268,12 @@
   <!-- blocco 2: la nostra canzone -->
   <section class="epi-block">
     <h3>La nostra canzone</h3>
-    <p class="epi-sub">3005 - Childish Gambino</p>
+    <p class="epi-sub">Every Breath You Take - The Police</p>
     <div class="song-card player" id="player-card">
       <div class="song-cover">▶</div>
       <div class="song-info">
-        <div class="song-title">3005</div>
-        <div class="song-artist">Childish Gambino · tocca per ascoltare</div>
+        <div class="song-title">Every Breath You Take</div>
+        <div class="song-artist">The Police · tocca per ascoltare</div>
       </div>
     </div>
     <p class="epi-note">[una delle tue preferite, ora anche una delle mie]</p>
@@ -293,6 +305,7 @@
   <div class="ptext" id="p-text"></div>
   <button class="pclose" id="p-close">chiudi e continua</button>
 </div>
+<button class="pscroll-cue" id="p-scroll-cue" aria-label="scorri fino in fondo">▾</button>
 
 <script src="shared.js"></script>
 <script>
@@ -311,8 +324,20 @@ Già in queste prime settimane ti ho proiettato nel mio mondo con una naturalezz
 
 Le settimane sono proseguite, andate avanti, indietro, lente e veloci, ma con una nuova sicurezza (che tanto sicura in quei giorni non era, ma vabbè), però era l'inizio di quello che stiamo vivendo ora, ovvero tu ed io. Grazie Qalbi!`,
    photos:['Photos/Tappa_1/web/1_selfie.jpg','Photos/Tappa_1/web/2_sasso.jpg','Photos/Tappa_1/web/3_doria.jpg','Photos/Tappa_1/web/4_matrimonio.jpg','Photos/Tappa_1/web/5_couscous.jpg','Photos/Tappa_1/web/6_svapo.jpg']},
-  {num:'2', label:'Una giornata qualsiasi', title:'Tappa 2', date:'[mese / anno]', text:'[Una giornata spensierata che vi rappresenta.]', photos:[]},
-  {num:'3', label:'Il primo viaggio',       title:'Tappa 3', date:'[gennaio / febbraio]', text:'[I vostri viaggi, fatti tra gennaio e febbraio. Sostituisci con il ricordo.]', photos:[]},
+  {num:'2', label:'Una giornata qualsiasi', title:'Una giornata qualsiasi', date:'Estate 2025',
+   text:`I giorni passavano uno dopo l'altro e pian piano abbiamo iniziato a conoscerci sempre di più e sempre meglio, in quel periodo abbiamo girato e visto tanti posti, fatto tante trasferte, ogni settimana di giorno libero finivamo da qualche parte, lontano da tutti per dare una definizione al NOI senza avere influenze esterne, così abbiamo iniziato a prendere ed avere una forma, il percorso è stato lungo e non esente da problemi d'altronde, come sarebbe possibile creare qualcosa senza incidenti di percorso (si chiameranno cosi per un motivo?)
+
+Di fatto abbiamo fatto tanto: i giorni tranquilli sul laghetto del Cerreto, i tramonti a Sestri, Camogli e tanti altri posti, ognuno di questi ha segnato a suo modo la nostra storia e con te vorrei condividere altre milioni di giornate cosi belle e tranquille, dove sì, il posto giocava il suo ruolo ma più di sottofondo, la protagonista di tutto ciò eri e sei sempre stata te. Stare con te è bellissimo, che sia uno scantinato al buio o sulla cima dell'Empire State Building, riesci a rendere ogni posto magico semplicemente essendo, senza sforzarti, impersonificando la persona che sei. Ognuna di queste giornate ha una storia da raccontare di per se, come al Cerreto: i fiori che ho raccolto per darti a bordo del lago, oppure i bimbi persi per il sentiero, quando dopo un "presentati sportiva" hai comunque scelto di vestirti fine (super apprezzato), ti mancavano solo i tacchi per fare questa giornata in modalità hardcore. Ho esplorato solo una parte di quella giornata, ma come ho detto, sono e rimarranno infiniti i racconti che posso tirare fuori da questi giorni.
+
+Sicuramente la shape di questi giorni mi ha dato conferma delle prime impressioni che avevo su di te, ha reso ogni secondo di paura o ansia verso il tuo pensiero su di te meritato al 100%, perché trovare una persona come te è una fortuna, una delle più grandi che una persona può mai sperare. Da questi giorni e questa conoscenza abbiamo deciso di sceglierci, in modo naturale e del tutto spontaneo, come spesso ti piace citare :D. Ma questa è la verità, eravamo due cuori in cerca di autore e direi che un autore lo abbiamo trovato, quello che riempie l'uno quello dell'altro e farò sempre tutto per vederti e farti sorridere, perché vorrei ridarti anche solo l'1% di ciò che tu hai dato a me.`,
+   photos:['Photos/Tappa_2/web/01_spiaggia.jpg','Photos/Tappa_2/web/02_lago.jpg','Photos/Tappa_2/web/03_fiori.jpg','Photos/Tappa_2/web/04_tramonto.jpg','Photos/Tappa_2/web/05_treno.jpg','Photos/Tappa_2/web/06_tettoia.jpg','Photos/Tappa_2/web/07_spalla.jpg','Photos/Tappa_2/web/08_notte.jpg','Photos/Tappa_2/web/09_parcheggio.jpg','Photos/Tappa_2/web/10_video.jpg']},
+  {num:'3', label:'Il primo viaggio', title:'Primo viaggio', date:'Malta · Ottobre 2025',
+   text:`Beh che dire? Dobbiamo parlare di più della parola spontaneità? Com'è nato questo? "Ho voglia di fare serata, perché non andiamo in Versilia?" Era LUNEDì, quindi il mio cervello pazzo ha pensato: "perché non andiamo a Malta?". Così è iniziato, planning? Poco, Outcome? Devastante. Forse lo avremmo dovuto capire dalla serata prima, o dalla mattina stessa. Cioè, ti rendi conto? Siamo passati da fare serata a La Spezia a svegliarci completamente in ritardo per il treno + volo, dovendo improvvisare una trasferta in macchina (più multa), con mia madre incazzata nera (strano lol), c'erano tutti i segni per capire che sarebbe stata una trasferta TOSTA, ma comunque ha lasciato un segno su di noi (e sulla tua schiena, RIP). Ma vogliamo parlare della bellezza, della libertà di tutto ciò? Siamo arrivati a Malta con le migliori intenzioni del mondo, è stata malta a distruggerle, non noi! Siamo addirittura andati ad un museo, giusto per metterlo nella check-list, volevi litigare con le tue care vicine di aereo… aaaa quante ne sono passate in sole 24h. Entrare in stanza e trovarci la gigantografia di Riomaggiore, sembra proprio il Truman Show, ma più che quello lo chiamerei destino, perché si abbiamo fatto tante scelte durante questo periodo, ma mi sembra che il destino ci abbia sempre sorriso in questo cammino insieme, indicandoci con questi piccoli segnali le cose giuste e facendoci capire che, forse, siamo destinati a condividere il percorso, che forse, questo percorso ci sorride ed è la cosa giusta. Chissà se Malta aveva altro da offrire, magari spiagge, magari relax, ma non lo sapremmo fino ad un futuro, futuro per cui ti condivido un consiglio: la prossima volta stiamo meno tempo al bar.
+
+Questo è stato il primo "viaggio", ma ora vorrei focalizzarmi su uno un pò più serio e strutturato, ovviamente parlo di quello che è iniziato come un "andiamo in Portogallo" e qualche settimana dopo ci siamo trovati in Giordania! Giusto il mese prima di uno scoppio di guerra che ha paralizzato tutta quella zona! Vedi che quando parlo di destino… Forse devo ancora realizzare dove e in che condizioni ci siamo trovati, dallo stare in casa con dei possibili miliziani, alle strade colorate e diroccate di Amman (ribattezzata da me "guarda Napoli"), in questi giorni abbiamo camminato tanto, visto alcune cose e chissà se quel centro commerciale esiste davvero… A parte gli scherzi, qui abbiamo fatto il vero e proprio primo giro, passando dei giorni bellissimi insieme in una regione del mondo del tutto nuova anche per me. Aver fatto il bagno a gennaio sicuramente mi mancava, e poi, hey, in quel mare manco ti serviva un salvagente, direi proprio il posto perfetto! In omaggio c'era anche un trattamento di fango!
+
+A parte gli scherzi, per questa tappa non ho molto da dire senza risultare ripetitivo, lascio parlare le immagini che come hai detto tu non troppo tempo fa: "stavo riguardando le immagini e non ce n'è una dove non sorrido", questo per me vuol dire già tanto, anzi, per me questo vuol dire già tutto. Devi sorridere, sempre, perché sei bellissima quando lo fai ed emani una luce bellissima e tutta tua.`,
+   photos:['Photos/Tappa_3/web/01_aereo.jpg','Photos/Tappa_3/web/02_valletta.jpg','Photos/Tappa_3/web/03_stanza.jpg','Photos/Tappa_3/web/04_amman.jpg','Photos/Tappa_3/web/05_chiesa.jpg','Photos/Tappa_3/web/06_ristorante.jpg','Photos/Tappa_3/web/07_bagno.jpg']},
   {num:'4', label:'Anche le tempeste',      title:'Tappa 4', date:'[mese / anno]', text:'[Un momento difficile superato insieme. Anche i litigi fanno parte della storia.]', photos:[]},
   {num:'5', label:'Oggi',                   title:'Tappa 5', date:'[oggi]',        text:'[Dove siete adesso, e cosa vuoi dirle per questo primo anno.]', photos:[]},
 ];
@@ -463,10 +488,13 @@ function openTappa(i){
   document.getElementById('p-text').textContent=t.text;
   buildCarousel(t.photos);
   scrim.classList.add('show');panel.classList.add('show');
+  panel.scrollTop=0;               // ogni tappa parte dall'inizio del testo
   startAutoplay();
+  requestAnimationFrame(updateScrollCue);
 }
 function closeTappa(){
   stopAutoplay();
+  pscrollCue.classList.remove('show');
   scrim.classList.remove('show');panel.classList.remove('show');
   // avanza solo se stavo guardando la tappa attiva (non una gia' completata rivisitata)
   if(openIndex===unlocked && unlocked<TAPPE.length){ unlocked++; render(); placeBrocco(); }
@@ -480,7 +508,19 @@ sentiero.addEventListener('click',e=>{
   if(i<=unlocked) openTappa(i); // attiva o gia' completata: apribile; le locked no
 });
 document.getElementById('p-close').addEventListener('click',closeTappa);
-scrim.addEventListener('click',closeTappa);
+
+// ====== chiusura SOLO dal pulsante giallo + freccia "vai in fondo" ======
+const pscrollCue=document.getElementById('p-scroll-cue');
+// mostra la freccia finche' c'e' altro da scorrere (testo + pulsante sotto la piega)
+function updateScrollCue(){
+  const more = panel.scrollHeight - panel.clientHeight - panel.scrollTop > 24;
+  pscrollCue.classList.toggle('show', more && panel.classList.contains('show'));
+}
+// la freccia porta in fondo, fin sopra al pulsante per chiudere
+pscrollCue.addEventListener('click',()=>panel.scrollTo({top:panel.scrollHeight,behavior:'smooth'}));
+// toccare lo sfondo NON chiude piu': accompagna verso il basso (verso il testo)
+scrim.addEventListener('click',()=>panel.scrollBy({top:Math.round(panel.clientHeight*0.7),behavior:'smooth'}));
+panel.addEventListener('scroll',updateScrollCue);
 
 // ====== PUZZLE FOTO 3x3 ======
 // la foto e' incorporata come base64 in PUZZLE_IMG (definita in fondo, prima di questo script)
@@ -565,10 +605,10 @@ buildTiles();
 shuffle(12);   // mescolamento leggero (piu' facile)
 place();
 
-// ====== player musica 3005 ======
+// ====== player musica ======
 // apre il brano su Spotify (cerca) - l'audio parte nell'app esterna, non nel sito
 document.getElementById('player-card').addEventListener('click',()=>{
-  window.open('https://open.spotify.com/search/3005%20Childish%20Gambino','_blank');
+  window.open('https://open.spotify.com/search/Every%20Breath%20You%20Take%20The%20Police','_blank');
 });
 
 // ====== mascotte ======
