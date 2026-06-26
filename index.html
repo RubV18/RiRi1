@@ -182,6 +182,21 @@
   /* cuori al tocco */
   .heartfx{position:fixed;font-size:20px;pointer-events:none;z-index:60;animation:floatUp 1s ease-out forwards;}
   @keyframes floatUp{0%{transform:translate(-50%,-50%) scale(.6);opacity:1;}100%{transform:translate(-50%,-160%) scale(1.3);opacity:0;}}
+
+  /* fumetto "Brokky offeso" (palette della stanza bambinesca) */
+  .brokky-bubble{
+    position:fixed;left:50%;bottom:172px;z-index:55;
+    transform:translateX(-50%) translateY(8px) scale(.8);
+    background:#fff;border:4px solid #9A4E68;border-radius:12px;
+    padding:8px 12px;font-family:'Press Start 2P',monospace;font-size:10px;
+    color:#9A4E68;white-space:nowrap;
+    opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;
+  }
+  .brokky-bubble.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1);}
+  .brokky-bubble::after{
+    content:'';position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);
+    border:7px solid transparent;border-top-color:#9A4E68;
+  }
 </style>
 
 <!-- SCHERMATA 1: BUSTA -->
@@ -228,12 +243,16 @@
   <div class="pix lacrima r"></div>
 </div>
 
+<!-- fumetto di Brokky quando il "no" sparisce (palette stanza bambinesca) -->
+<div class="brokky-bubble" id="brokky-bubble">Brokky offeso</div>
+
 <script>
 const sBusta=document.getElementById('s-busta');
 const sScelta=document.getElementById('s-scelta');
 const env=document.getElementById('env');
 const brocco=document.getElementById('brocco');
 const bNo=document.getElementById('b-no'), bSi=document.getElementById('b-si'), bTii=document.getElementById('b-tii');
+const brokkyBubble=document.getElementById('brokky-bubble');
 
 // stato mascotte
 function setMood(m){ brocco.className=m; }
@@ -262,17 +281,24 @@ bNo.addEventListener('click',e=>{
   bNo.style.transform=`scale(${scale})`;
   bNo.style.flexGrow=Math.max(0,1-noTaps*(1.05/NO_MAX));
   bNo.style.opacity=scale<=0.15?0:1;
-  if(scale<=0.15){bNo.style.padding='0';bNo.style.margin='0';bNo.style.width='0';bNo.style.flexBasis='0';bNo.style.pointerEvents='none';}
   // pozzanghera cresce in proporzione ai tap, satura all'ultimo
   const p=Math.min(1,noTaps/NO_MAX);
   pozza.style.width=(20+p*90)+'px';
   pozza.style.height=(6+p*16)+'px';
-  flashMood('triste',2600);
+  if(scale<=0.15){
+    bNo.style.padding='0';bNo.style.margin='0';bNo.style.width='0';bNo.style.flexBasis='0';bNo.style.pointerEvents='none';
+    // il "no" e' sparito: Brokky resta offeso e piange, con il suo fumetto
+    clearTimeout(moodTimer); setMood('triste');
+    brokkyBubble.classList.add('show');
+  } else {
+    flashMood('triste',2600);
+  }
 });
 
 // celebrazione: ingrandimento graduale ~2s, poi caricamento pagina a fine animazione
 function celebra(variant,callback){
   clearTimeout(moodTimer);
+  brokkyBubble.classList.remove('show');   // via il fumetto offeso: ora si festeggia
   // spengo pulito lo stato triste PRIMA di celebrare, per evitare che le animazioni
   // drop/triste vengano interrotte mentre parte la transizione di 2s (causa del lag)
   brocco.className='';
