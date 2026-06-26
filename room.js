@@ -167,4 +167,20 @@ const SPRITES={
     <rect x="9" y="10" width="4" height="4" fill="#F58BB0"/>
     <rect x="9" y="11" width="1.5" height="1.5" fill="#fff"/><rect x="11" y="11" width="1.5" height="1.5" fill="#fff"/>
     <rect x="9.5" y="12.5" width="3" height="1" fill="#fff"/></svg>`;},
+
+  // finestra: overlay trasparente (tutta l'area resta cliccabile via il div hotspot)
+  // con un piccolo sole che luccica come invito a "guardare fuori" -> versione seria
+  sprWindow(){return `<svg viewBox="0 0 30 25" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+    <g>
+      <rect x="5" y="4" width="4" height="4" fill="#FFD93D"/>
+      <rect x="4" y="5" width="6" height="2" fill="#FFD93D"/>
+      <rect x="6" y="3" width="2" height="6" fill="#FFD93D"/>
+      <rect x="3" y="3" width="1" height="1" fill="#FFE98A"/>
+      <rect x="10" y="9" width="1" height="1" fill="#FFE98A"/>
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2.2s" repeatCount="indefinite"/>
+    </g>
+    <rect x="15" y="17" width="1" height="1" fill="#fff">
+      <animate attributeName="opacity" values="0;1;0" dur="2.6s" repeatCount="indefinite"/>
+    </rect>
+  </svg>`;},
 };
