@@ -360,4 +360,21 @@ function burstHearts(n,variant){
   }
 }
 document.addEventListener('pointerdown',e=>tapHearts(e.clientX,e.clientY));
+
+// ====== RIENTRO (tasto "indietro") ======
+// tornando dalle pagine seria/tiii, iOS ripristina la pagina dalla bfcache cosi' com'era:
+// cioe' con Brokky gigante che festeggia. La riporto pulita alla schermata di scelta.
+function resetToChoice(){
+  clearTimeout(moodTimer);
+  setMood('');
+  brokkyBubble.classList.remove('show');
+  brocco.classList.remove('hidden');
+  sBusta.classList.add('hidden');
+  sScelta.classList.remove('hidden');
+  chosen=null;
+  noTaps=0;
+  bNo.removeAttribute('style');     // "no" torna pieno
+  pozza.removeAttribute('style');   // pozzanghera azzerata
+}
+window.addEventListener('pageshow',e=>{ if(e.persisted) resetToChoice(); });
 </script>
