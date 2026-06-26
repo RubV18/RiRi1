@@ -107,6 +107,18 @@
     white-space:pre-line;min-height:120px;
   }
   .letter-close{display:block;margin:16px auto 0;font-family:'Press Start 2P',monospace;font-size:10px;background:#FFD93D;border:3px solid #9A4E68;border-radius:8px;padding:10px 16px;cursor:pointer;color:#7a3f54;}
+  /* freccetta "scorri giu per continuare" dentro la letterina */
+  .letter-cue{
+    position:sticky;bottom:6px;z-index:2;
+    width:34px;height:34px;margin:8px auto 0;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:#FFD93D;border:3px solid #9A4E68;color:#7a3f54;
+    font-size:18px;line-height:1;box-shadow:0 3px 0 #E8B92E;
+    pointer-events:none;transition:opacity .3s ease;
+    animation:letterBob 1.4s ease-in-out infinite;
+  }
+  .letter-cue.hide{opacity:0;}
+  @keyframes letterBob{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
 </style>
 </head>
 <body>
@@ -154,6 +166,7 @@ ti amo RIM RIM ♥♥♥
 
 dal tuo broccoletto 🥦
 (6 7 💛 tung tung tung)</div>
+  <div class="letter-cue" id="letter-cue" aria-hidden="true">▾</div>
   <button class="letter-close" id="letter-close">chiudi ♥</button>
 </div>
 
@@ -235,8 +248,19 @@ function onObject(o,el){
 // pannello lettera
 const letterScrim=document.getElementById('letter-scrim');
 const letterSheet=document.getElementById('letter-sheet');
-function openLetter(){ letterScrim.classList.add('show');letterSheet.classList.add('show'); }
+const letterCue=document.getElementById('letter-cue');
+// mostra la freccetta finche' c'e' altro testo sotto da leggere
+function updateLetterCue(){
+  const more = letterSheet.scrollHeight - letterSheet.clientHeight - letterSheet.scrollTop > 16;
+  letterCue.classList.toggle('hide', !more);
+}
+function openLetter(){
+  letterScrim.classList.add('show');letterSheet.classList.add('show');
+  letterSheet.scrollTop=0;                 // riparte dall'inizio
+  requestAnimationFrame(updateLetterCue);
+}
 function closeLetter(){ letterScrim.classList.remove('show');letterSheet.classList.remove('show'); }
+letterSheet.addEventListener('scroll',updateLetterCue);
 document.getElementById('letter-close').addEventListener('click',closeLetter);
 letterScrim.addEventListener('click',closeLetter);
 
