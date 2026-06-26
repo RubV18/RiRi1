@@ -239,6 +239,16 @@
     content:'';position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);
     border:8px solid transparent;border-top-color:var(--rosa-serio-scuro);
   }
+  /* rimando alla versione bambinesca (simmetrico alla finestra della cameretta) */
+  .to-room{
+    position:fixed;left:12px;bottom:12px;z-index:60;
+    font-family:'Press Start 2P',monospace;font-size:9px;line-height:1.4;
+    text-decoration:none;color:var(--rosa-serio-scuro);
+    background:rgba(255,255,255,.82);border:3px solid var(--rosa-serio-scuro);
+    border-radius:20px;padding:8px 12px;opacity:.85;
+    box-shadow:0 3px 0 rgba(154,107,120,.35);
+  }
+  .to-room:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(154,107,120,.35);}
 </style>
 </head>
 <body>
@@ -247,6 +257,9 @@
   <h1>Il nostro sentiero</h1>
   <p>tocca la tappa che brilla almeno quanto brilli tu</p>
 </div>
+
+<!-- rimando alla versione bambinesca (simmetrico alla finestra nella cameretta) -->
+<a class="to-room" href="tiii.html">♥ la cameretta</a>
 
 <div class="sentiero" id="sentiero"></div>
 
