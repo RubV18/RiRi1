@@ -144,10 +144,12 @@ const SPRITES={
     <rect x="6" y="8" width="4" height="4" fill="#FFE98A"/>
     <text x="8" y="11.5" font-size="4" text-anchor="middle" fill="#9A4E68">?</text></svg>`;},
 
-  // BOOSTER: 67 magico (stella gialla con numero)
+  // BOOSTER: stella magica gialla (nessun numero: niente hint sul 67)
   sprMagic67(){return `<svg viewBox="0 0 16 16" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
     <polygon points="8,1 10,6 15,6 11,9 13,15 8,11 3,15 5,9 1,6 6,6" fill="#FFD93D" stroke="#E8B92E" stroke-width="0.5"/>
-    <text x="8" y="10.5" font-size="5" text-anchor="middle" fill="#9A4E68" font-family="monospace" font-weight="bold">67</text></svg>`;},
+    <rect x="7" y="5" width="2" height="2" fill="#fff" opacity=".9"/>
+    <rect x="6" y="7" width="1" height="1" fill="#FFF6D6"/>
+    <rect x="9" y="8" width="1" height="1" fill="#FFF6D6"/></svg>`;},
 
   // BOOSTER: broccoletto mini (richiama la mascotte)
   sprBroccoMini(){return `<svg viewBox="0 0 16 16" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
