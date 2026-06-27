@@ -339,9 +339,9 @@ function spawnItem(){
   // sempre garantita almeno una macchina +1 disponibile per chi gioca prudente.
   tapsSinceBooster++;
   let type='car';
-  const boosterChance = hasLostOnce ? 0.28 : 0.42;
+  const boosterChance = hasLostOnce ? 0.28 : 0.72;   // primo tentativo: tanti booster -> facile sforare 67
   const hasCarOnScreen=[...road.children].some(c=>c.dataset.type==='car');
-  if(tapsSinceBooster>=2 && Math.random()<boosterChance && hasCarOnScreen){
+  if(tapsSinceBooster>=(hasLostOnce?2:1) && Math.random()<boosterChance && hasCarOnScreen){
     type=Math.random()<0.5?'magic67':'brocco';
     tapsSinceBooster=0;
   }
@@ -352,8 +352,8 @@ function spawnItem(){
   el.style.top=(8+Math.random()*70)+'%';
   let pts;
   if(type==='car'){ el.innerHTML=SPRITES.sprCar(); pts=1; }
-  else if(type==='magic67'){ el.innerHTML=SPRITES.sprMagic67(); pts=7; el.innerHTML+='<span class="road-badge">+7</span>'; }
-  else { el.innerHTML=SPRITES.sprBroccoMini(); pts=4; el.innerHTML+='<span class="road-badge">+4</span>'; }
+  else if(type==='magic67'){ el.innerHTML=SPRITES.sprMagic67(); pts=7; }   // valore non mostrato
+  else { el.innerHTML=SPRITES.sprBroccoMini(); pts=4; }                    // valore non mostrato
   el.addEventListener('click',()=>{
     addScore(pts);
     el.remove();itemsOnScreen--;
